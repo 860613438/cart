@@ -50,7 +50,7 @@
                   </div>
                 </div>
                 <div class="cart-tab-4">
-                  <div class="item-price-total">￥{{item.productPrice * item.productNum}}元</div>
+                  <div class="item-price-total">{{item.productPrice * item.productNum | formatMoney}}</div>
                 </div>
                 <div class="cart-tab-5">
                   <div class="cart-item-opration">
@@ -98,6 +98,12 @@ import axios from "axios"
 import Header from "../components/Header"
 export default {
   name: 'cart',
+  filters:{
+    formatMoney(val){
+      if(!val) return "0.00";
+      return '￥' + val.toFixed(2);
+    }
+  },
   data(){
     return {
       carList: []
@@ -117,7 +123,8 @@ export default {
           this.carList = res.data.data;
         }
       })
-    }
+    },
+    
   },
 }
 </script>
