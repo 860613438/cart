@@ -21,7 +21,7 @@
               <li v-for="item in carList" :key="item.productId">
                 <div class="cart-tab-1">
                   <div class="cart-item-check">
-                    <a href="javascipt:;" class="checkbox-btn item-check-btn" :class="{'checked':item.checked}">
+                    <a href="javascipt:;" class="checkbox-btn item-check-btn" :class="{'checked':item.checked}" @click="editCart('',item)">
                       <svg class="icon icon-ok">
                         <use xlink:href="#icon-ok"></use>
                       </svg>
@@ -42,9 +42,9 @@
                   <div class="item-quantity">
                     <div class="select-self select-self-open">
                       <div class="select-self-area">
-                        <a class="input-sub">-</a>
+                        <a class="input-sub" @click="editCart('minus',item)">-</a>
                         <span class="select-ipt">{{item.productNum}}</span>
-                        <a class="input-add">+</a>
+                        <a class="input-add" @click="editCart('add',item)">+</a>
                       </div>
                     </div>
                   </div>
@@ -80,7 +80,7 @@
             </div>
             <div class="cart-foot-r">
               <div class="item-total">
-                总价: <span class="total-price">￥89.00元</span>
+                总价: <span class="total-price">￥89.00元{{total}}</span>
               </div>
               <div class="btn-wrap">
                 <a class="btn btn--red btn--dis">结算</a>
@@ -100,7 +100,8 @@ export default {
   name: 'cart',
   data(){
     return {
-      carList: []
+      carList: [],
+      total: 0,
     }
   },
   components: {
@@ -108,14 +109,34 @@ export default {
   },
   mounted() {
     this.init();
+    
   },
   methods: {
     init(){
-      console.log('==')
       axios.get("/mock/cart.json").then(res=>{
         if(res.status == 200){
           this.carList = res.data.data;
+          // this.totalPrice();
+          
         }
+      })
+    },
+    //购物车加减 选中
+    editCart(type,item){
+      if(type == "add"){
+        item.productNum++
+      }else if(type == "minus"){
+        if(item.productNum == 0) return
+        item.productNum--
+      }else{
+        item.checked = !item.checked
+      }
+    },
+    //总价计算
+    totalPrice(){
+      this.carList.forEach(item => {
+        console.log(item.productNum * item.totalPrice)
+        // this.total += item.productNum * item.totalPrice
       })
     }
   },
